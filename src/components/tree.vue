@@ -23,18 +23,28 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import tree from '@/components/tree.vue';
 
+interface TreeFormat {
+  title: string;
+  id: number;
+  list?: TreeFormat[];
+  flag?: boolean;
+  check?: number;
+  checkbox?: boolean;
+  layer?: number;
+  triangle?: boolean;
+}
 
 @Component({
   name: 'tree',
 })
 export default class Tree extends Vue {
-@Prop() private treeData!: any;
+@Prop() private treeData!: TreeFormat[];
   @Prop() private treeSerial!: number;
   @Prop() private defaultChecked!: number[] | undefined;
 
   // method
   public doClick(i: number): void {
-    this.treeData.map((item: any, index: number) => {
+    this.treeData.map((item: TreeFormat, index: number) => {
       if (index === i) {
         item.flag = !item.flag;
         if (item.list) {
@@ -43,11 +53,11 @@ export default class Tree extends Vue {
       }
     });
   }
-  public setSelect(serial: any, val: number) {
+  public setSelect(serial: number, val: number) {
     let checkOne: boolean = true;
     let checkTwo: boolean = true;
     let checkThree: boolean = true;
-    this.treeData.map((item: any, index: number) => {
+    this.treeData.map((item: TreeFormat, index: number) => {
       if (index === serial) {
         item.check = val;
       }
@@ -68,7 +78,7 @@ export default class Tree extends Vue {
     let checkOne: boolean = true;
     let checkTwo: boolean = false;
     this.treeData[i].check === 1 ? value = 0 : value = 1;
-    this.treeData.map((item: any, index: number) => {
+    this.treeData.map((item: TreeFormat, index: number) => {
       if (index === i) {
         item.check = value;
         this.doCount(item, value);
@@ -84,9 +94,9 @@ export default class Tree extends Vue {
     }
     this.treeData.push();
   }
-  public doCount(item: any, value: number) {
+  public doCount(item: TreeFormat, value: number) {
     if (item.list) {
-      item.list.map((idx: any, index: number) => {
+      item.list.map((idx: TreeFormat, index: number) => {
         idx.check = value;
         if (idx.list) {
           this.doCount(idx, value);
@@ -95,9 +105,9 @@ export default class Tree extends Vue {
       item.list.push();
     }
   }
-  public doChecked(treeData: any, defaultChecked: number[]) {
+  public doChecked(treeData: TreeFormat[], defaultChecked: number[]) {
     // console.log(defaultChecked)
-    treeData.map((item: any, index: number) => {
+    treeData.map((item: TreeFormat, index: number) => {
       if (defaultChecked.indexOf(item.id) + 1) {
         const i: number = index;
         this.doSelect(i);
@@ -114,6 +124,7 @@ export default class Tree extends Vue {
     if (this.defaultChecked && this.defaultChecked[0]) {
       this.doChecked(this.treeData, this.defaultChecked);
     }
+    // console.log(this.treeData);
   }
 }
 </script>

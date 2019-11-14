@@ -11,19 +11,30 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import tree from '@/components/tree.vue';
 
+interface TreeFormat {
+  title: string;
+  id: number;
+  list?: TreeFormat[];
+  flag?: boolean;
+  check?: number;
+  checkbox?: boolean;
+  layer?: number;
+  triangle?: boolean;
+}
+
 @Component({
     components: { tree },
 })
 export default class SetTree extends Vue {
-@Prop() private treeData!: any;
+@Prop() private treeData!: TreeFormat[];
   @Prop() private triangle!: boolean | undefined;
   @Prop() private checkbox!: boolean | undefined;
   @Prop() private defaultExpanded!: number[] | undefined;
   @Prop() private defaultChecked!: number[] | undefined;
 
   // method
-  public initialize(treeData: any, count: number): void {
-    treeData.map((item: any, index: number) => {
+  public initialize(treeData: TreeFormat[], count: number): void {
+    treeData.map((item: TreeFormat, index: number) => {
       item.layer = count;
       item.triangle = this.triangle;
       item.checkbox = this.checkbox;
@@ -38,7 +49,7 @@ export default class SetTree extends Vue {
       }
     });
   }
-  public check(treeData: any): boolean | undefined {
+  public check(treeData: TreeFormat[]): boolean | undefined {
     let i: number = 0;
     for (const item of treeData) {
       i++;
@@ -52,7 +63,7 @@ export default class SetTree extends Vue {
         }
         return true;
       } else if (item.list) {
-        const c: any = this.check(item.list);
+        const c: boolean | undefined = this.check(item.list);
         if (c) {
           item.flag = true;
           return true;

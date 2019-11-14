@@ -4,6 +4,7 @@
     :triangle="true"
     :checkbox="true"
     :defaultExpanded="defaultExpanded"
+    :defaultChecked="defaultChecked"
     ></set-tree>
   <!-- treeData:传入数据；
     triangle:三角显示（true开启/false关闭）--选填，默认关闭
@@ -15,13 +16,24 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import setTree from '@/components/setTree.vue';
 
+interface TreeFormat {
+  title: string;
+  id: number;
+  list?: TreeFormat[];
+  flag?: boolean;
+  check?: number;
+  checkbox?: boolean;
+  layer?: number;
+  triangle?: boolean;
+}
+
 @Component({
     components: { setTree },
 })
 export default class Home extends Vue {
-  private defaultExpanded: number[] = [41]; // 以1为始默认展开（设置默认展开子级，父级未默认，则父级展开时默认展开子级）
-  // defaultChecked: [], // 以1为始默认选中--父级选中，子级全选中
-  private treeData: any[] = [
+  private defaultExpanded: number[] = []; // 以1为始默认展开（设置默认展开子级，父级未默认，则父级展开时默认展开子级）
+  private defaultChecked: number[] = [1]; // 以1为始默认选中--父级选中，子级全选中
+  private treeData: TreeFormat[] = [
     {
       title: 'a1',
       id: 1,
